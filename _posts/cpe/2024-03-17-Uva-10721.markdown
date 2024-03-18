@@ -6,30 +6,36 @@ categories: cpe
 ---
 # 【Uva 10721】  Bar Codes (Combination of Repetitions)
 
-:::info
+<div class="info">
+
 這題同時是CPE 2023-12-12的第七題</br>
-:link:[題目](https://cpe.cse.nsysu.edu.tw/cpe/file/attendance/problemPdf/10721.pdf)</br>
-:link:[我的程式碼(使用重複組合)](https://github.com/leemikepop/cpe/blob/master/CPE20231212/007_uva10721/main.cpp)
-:::
+🔗[題目](https://cpe.cse.nsysu.edu.tw/cpe/file/attendance/problemPdf/10721.pdf)</br>
+🔗[我的程式碼(使用重複組合)](https://github.com/leemikepop/cpe/blob/master/CPE20231212/007_uva10721/main.cpp)
+
+</div>
 
 ## ❓ 解題思路
-:success:
+<div class="success">
+
 其實標準答案都是用動態規劃來做，只是這題剛好可以把題目轉成組合問題。</br>
-:link:[DP參考](https://www.larrysprognotes.com/UVa-10721/)
-::
+🔗[DP參考](https://www.larrysprognotes.com/UVa-10721/)
+
+</div>
+
 題目所要求的BC(n, k, m)可以想成重複組合求整數解個數的問題。即：
-```
+
+~~~
 n : n顆球
 k : k個箱子
 m : 每個箱子最多m顆(最少1顆)球
-```
-$$
-\begin{cases}
+~~~
+
+$$ \begin{cases}
  x_{1} + x_{2} + x_{3} + ... + x_{k} = n\\
  1 \leq x_{i} \leq m
-\end{cases}
-$$
+\end{cases} $$
 
+</br>
 接著調整`xi`的上下界，令`yi = xi - 1`，使每個箱子先裝一顆球(避免空箱)。
 
 $$
@@ -47,17 +53,18 @@ $$
 
 化減後：
 $$
-sol = \binom{n-1}{k-1} + \sum_{i=1}^{k}\left ( -1 \right )^{i}\binom{k}{i}\binom{n-1-im}{k-1}$$
+sol = \binom{n-1}{k-1} + \sum_{i=1}^{k}\left ( -1 \right )^{i}\binom{k}{i}\binom{n-1-im}{k-1}
+$$
 
 第一項：n-k顆球可空箱可重複組合放入k個箱子。</br>
 第二項：利用排容原理把超過上界的減掉。
 
-## :paperclip: 程式碼(C++)
-::success
+## 📎 程式碼(C++)
+:::success
 組合計算要一邊乘一邊除才不會Overflow，然後用long long不用多說。
 :::
 
-```cpp {.line-numbers}
+~~~cpp
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -108,4 +115,4 @@ int main(){
     cout << endl << "Exicution Time: " << duration << " ms" << endl;
     return 0;
 }
-```
+~~~
