@@ -1,0 +1,111 @@
+---
+layout: post
+title:  "【Uva 10721】  Bar Codes (Combination of Repetitions)"
+date:   2024-03-17 23:59:44 +0800
+categories: cpe
+---
+# 【Uva 10721】  Bar Codes (Combination of Repetitions)
+
+:::info
+這題同時是CPE 2023-12-12的第七題</br>
+:link:[題目](https://cpe.cse.nsysu.edu.tw/cpe/file/attendance/problemPdf/10721.pdf)</br>
+:link:[我的程式碼(使用重複組合)](https://github.com/leemikepop/cpe/blob/master/CPE20231212/007_uva10721/main.cpp)
+:::
+
+## ❓ 解題思路
+:success:
+其實標準答案都是用動態規劃來做，只是這題剛好可以把題目轉成組合問題。</br>
+:link:[DP參考](https://www.larrysprognotes.com/UVa-10721/)
+::
+題目所要求的BC(n, k, m)可以想成重複組合求整數解個數的問題。即：
+```
+n : n顆球
+k : k個箱子
+m : 每個箱子最多m顆(最少1顆)球
+```
+$$
+\begin{cases}
+ x_{1} + x_{2} + x_{3} + ... + x_{k} = n\\
+ 1 \leq x_{i} \leq m
+\end{cases}
+$$
+
+接著調整`xi`的上下界，令`yi = xi - 1`，使每個箱子先裝一顆球(避免空箱)。
+
+$$
+\begin{cases}
+ y_{1} + y_{2} + y_{3} + ... + y_{k} = n-k\\
+ 0 \leq y_{i} \leq m-1
+\end{cases}
+$$
+
+最後就可以用重複組合的解法：
+
+$$
+sol = \binom{n-k+k-1}{k-1} + \sum_{i=1}^{k}\left ( -1 \right )^{i}\binom{k}{i}\binom{n-k+k-1-im}{k-1}
+$$
+
+化減後：
+$$
+sol = \binom{n-1}{k-1} + \sum_{i=1}^{k}\left ( -1 \right )^{i}\binom{k}{i}\binom{n-1-im}{k-1}$$
+
+第一項：n-k顆球可空箱可重複組合放入k個箱子。</br>
+第二項：利用排容原理把超過上界的減掉。
+
+## :paperclip: 程式碼(C++)
+::success
+組合計算要一邊乘一邊除才不會Overflow，然後用long long不用多說。
+:::
+
+```cpp {.line-numbers}
+#include <iostream>
+#include <string>
+#include <sstream>
+
+using namespace std;
+
+long long nCk(int N, int M) {
+    long long ret = 1;
+    for(int i = 1; i <= M; ++i) {
+        ret *= (N - M + i) / i;
+    }
+    return ret;
+}
+
+int main(){
+    clock_t start = clock();
+    ostringstream oss;
+    string line;
+	int n, k, m;
+	while(getline(cin, line)){
+        if (line.empty()) break;
+		stringstream ss(line);
+		ss >> n >> k >> m;
+		if(n > m*k){
+			oss << 0 << endl;
+			continue;
+		}
+		//Use combination with repetition
+		/*
+		n : balls
+		k : boxes
+		m : upper bound of each box
+		We would like to find the number of integer solutions => x1 + x2 + ... + xk = n (1 <= xi <= m)
+		
+		First, allocate one ball to every box. Then, remaining n-k balls.
+		The equation => y1 + y2 + ... + yk = n-k (0 <= yi <= m-k)
+		sol = C(n-k + k-1,k-1) - C(k,1)C(n-k -m +k-1,k-1) + C(k,2)C(n-k -2*m +k-1,k-1) - ... (by principle of inclusion-exclusion)
+		*/
+		long long ret = nCk(n-1, k-1);
+		for(int i = 1; n-k >= i*m; ++i){
+			ret += (i%2==0 ? nCk(k,i)*nCk(n-i*m-1,k-1) : (-1)*nCk(k,i)*nCk(n-i*m-1,k-1));
+		}
+		oss << ret << endl;
+	}
+    cout << oss.str();
+    clock_t end = clock();
+    double duration = (double)(end - start) / (__clock_t)1000;
+    cout << endl << "Exicution Time: " << duration << " ms" << endl;
+    return 0;
+}
+```
