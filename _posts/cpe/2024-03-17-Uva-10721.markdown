@@ -4,18 +4,22 @@ title:  "【Uva 10721】  Bar Codes (Combination of Repetitions)"
 date:   2024-03-17 23:59:44 +0800
 categories: cpe
 ---
-# 【Uva 10721】  Bar Codes (Combination of Repetitions)
+<br/>
+>這題同時是CPE 2023-12-12的第七題
+>🔗[題目](https://cpe.cse.nsysu.edu.tw/cpe/file/attendance/problemPdf/10721.pdf)
+>🔗[我的程式碼(使用重複組合)](https://github.com/leemikepop/cpe/blob/master/CPE20231212/007_uva10721/main.cpp)
+{: .prompt-tip }
+<br/>
 
-這題同時是CPE 2023-12-12的第七題
-🔗[題目](https://cpe.cse.nsysu.edu.tw/cpe/file/attendance/problemPdf/10721.pdf)
-🔗[我的程式碼(使用重複組合)](https://github.com/leemikepop/cpe/blob/master/CPE20231212/007_uva10721/main.cpp)
+---
 
+<br/>
 
 ## ❓ 解題思路
 
-其實標準答案都是用動態規劃來做，只是這題剛好可以把題目轉成組合問題。
-🔗[DP參考](https://www.larrysprognotes.com/UVa-10721/)
-
+>其實標準答案都是用動態規劃來做，只是這題剛好可以把題目轉成組合問題。
+>🔗[DP參考](https://www.larrysprognotes.com/UVa-10721/)
+{: .prompt-tip }
 
 題目所要求的BC(n, k, m)可以想成重複組合求整數解個數的問題。即：
 ~~~
@@ -47,12 +51,20 @@ sol = \binom{n-k+k-1}{k-1} + \sum_{i=1}^{k}\left ( -1 \right )^{i}\binom{k}{i}\b
 $$
 
 化減後：
+<br/>
+
 $$
 sol = \binom{n-1}{k-1} + \sum_{i=1}^{k}\left ( -1 \right )^{i}\binom{k}{i}\binom{n-1-im}{k-1}
 $$
 
-第一項：n-k顆球可空箱可重複組合放入k個箱子。</br>
+第一項：n-k顆球可空箱可重複組合放入k個箱子。
+<br/>
 第二項：利用排容原理把超過上界的減掉。
+<br/>
+
+---
+
+<br/>
 
 ## 📎 程式碼(C++)
 

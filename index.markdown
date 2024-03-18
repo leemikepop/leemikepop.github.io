@@ -4,7 +4,4 @@
 
 layout: home
 ---
-
-## 簡介：
-
 歡迎來到我的 GitHub Pages，這裡是我筆記的集合。
