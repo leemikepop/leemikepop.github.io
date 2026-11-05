@@ -1,0 +1,133 @@
+---
+import { categories } from '../data/site';
+import { formatPeriod, repoUrl, type Project } from '../lib/content';
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const d = project.data;
+const repo = repoUrl(d);
+const MAX_TAGS = 5;
+const shownTags = d.tags.slice(0, MAX_TAGS);
+const hiddenTags = d.tags.length - shownTags.length;
+---
+
+<article class="card" data-category={d.category} data-tags={d.tags.join('|')}>
+  <div class="meta mono">
+    <span class="cat">{categories[d.category]}</span>
+    <span class="period">{formatPeriod(d)}</span>
+  </div>
+  <h3>
+    <a class="title-link" href={`/projects/${project.id}/`}>{d.title}</a>
+  </h3>
+  <p class="summary">{d.summary}</p>
+  {
+    d.tags.length > 0 && (
+      <ul class="tags" aria-label="Tech stack">
+        {shownTags.map((t) => (
+          <li class="tag">{t}</li>
+        ))}
+        {hiddenTags > 0 && <li class="tag more">+{hiddenTags}</li>}
+      </ul>
+    )
+  }
+  <div class="foot">
+    <span class="badges">
+      {d.ongoing && <span class="badge ongoing">● ongoing</span>}
+      {d.visibility === 'private' && <span class="badge private">private</span>}
+      {d.fork && <span class="badge fork">fork</span>}
+    </span>
+    {
+      repo && (
+        <a class="ext mono" href={repo} rel="noopener">
+          repo ↗
+        </a>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 1.1rem 1.15rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition:
+      border-color 0.15s,
+      transform 0.15s;
+  }
+  .card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+  .cat {
+    color: var(--accent);
+  }
+  h3 {
+    margin: 0;
+    font-size: 1.05rem;
+    line-height: 1.4;
+  }
+  .title-link {
+    color: var(--text);
+  }
+  .title-link:hover {
+    text-decoration: none;
+  }
+  /* 整張卡片可點，但內部的 repo 連結仍可單獨點擊 */
+  .title-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+  }
+  .summary {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    line-height: 1.65;
+    flex: 1;
+  }
+  .tags {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+  .tag.more {
+    color: var(--muted);
+    border-style: dashed;
+  }
+  .foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 1.4rem;
+    margin-top: 0.15rem;
+  }
+  .badges {
+    display: flex;
+    gap: 0.35rem;
+  }
+  .ext {
+    position: relative;
+    z-index: 1;
+    font-size: 0.78rem;
+  }
+</style>

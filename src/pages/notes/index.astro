@@ -1,0 +1,82 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getNotes, formatDate } from '../../lib/content';
+
+const notes = await getNotes();
+---
+
+<Base title="Notes" description="Problem-solving write-ups, technical notes and lessons learned.">
+  <div class="wrap">
+    <p class="mono crumb"><span class="ps">$</span> ls ./notes</p>
+    <h1>Notes</h1>
+    <p class="lead">Problem-solving write-ups, technical notes and lessons learned.</p>
+
+    <ul class="list">
+      {
+        notes.map((n) => (
+          <li>
+            <span class="date mono">{formatDate(n.data.date)}</span>
+            <div>
+              <a href={`/notes/${n.id}/`}>{n.data.title}</a>
+              {n.data.description && <p>{n.data.description}</p>}
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</Base>
+
+<style>
+  .crumb {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .ps {
+    color: var(--ok);
+  }
+  h1 {
+    margin: 0.3rem 0 0.6rem;
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    line-height: 1.2;
+  }
+  .lead {
+    margin: 0 0 2rem;
+    color: var(--text-dim);
+  }
+  .list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: 50rem;
+  }
+  .list li {
+    display: grid;
+    gap: 0.15rem 1.5rem;
+    padding: 0.9rem 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  @media (min-width: 640px) {
+    .list li {
+      grid-template-columns: 7rem 1fr;
+    }
+  }
+  .date {
+    font-size: 0.78rem;
+    color: var(--muted);
+    padding-top: 0.2rem;
+  }
+  .list a {
+    color: var(--text);
+    font-weight: 600;
+  }
+  .list a:hover {
+    color: var(--accent);
+  }
+  .list p {
+    margin: 0.2rem 0 0;
+    font-size: 0.88rem;
+    color: var(--text-dim);
+  }
+</style>

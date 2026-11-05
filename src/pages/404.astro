@@ -1,0 +1,25 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="404">
+  <div class="wrap mono box">
+    <p><span class="ps">$</span> cd {Astro.url.pathname}</p>
+    <p class="err">bash: cd: No such file or directory (404)</p>
+    <p><span class="ps">$</span> <a href="/">cd ~</a></p>
+  </div>
+</Base>
+
+<style>
+  .box {
+    padding-block: 4rem;
+    font-size: 0.95rem;
+    overflow-wrap: anywhere;
+  }
+  .ps {
+    color: var(--ok);
+  }
+  .err {
+    color: var(--danger);
+  }
+</style>

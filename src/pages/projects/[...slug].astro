@@ -1,0 +1,151 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { categories } from '../../data/site';
+import { getProjects, formatPeriod, repoUrl, type Project } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
+}
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const d = project.data;
+const { Content } = await render(project);
+const repo = repoUrl(d);
+const links = [...(repo ? [{ label: 'GitHub', url: repo }] : []), ...d.links];
+---
+
+<Base title={d.title} description={d.summary}>
+  <article class="wrap">
+    <p class="mono crumb">
+      <a href="/projects/">projects</a><span class="sep">/</span><span>{project.id}</span>
+    </p>
+
+    <header class="head">
+      <p class="mono cat">{categories[d.category]}</p>
+      <h1>{d.title}</h1>
+      <p class="summary">{d.summary}</p>
+
+      <dl class="facts mono">
+        <div>
+          <dt>period</dt>
+          <dd>{formatPeriod(d)}</dd>
+        </div>
+        {
+          d.role && (
+            <div>
+              <dt>role</dt>
+              <dd>{d.role}</dd>
+            </div>
+          )
+        }
+        <div>
+          <dt>source</dt>
+          <dd>
+            {d.visibility === 'private' ? 'private repo' : d.repo ? d.repo : '—'}
+            {d.fork && ' (fork)'}
+          </dd>
+        </div>
+      </dl>
+
+      {
+        d.tags.length > 0 && (
+          <ul class="tags">
+            {d.tags.map((t) => (
+              <li class="tag">{t}</li>
+            ))}
+          </ul>
+        )
+      }
+
+      {
+        links.length > 0 && (
+          <ul class="links mono">
+            {links.map((l) => (
+              <li>
+                <a href={l.url} rel="noopener">
+                  {l.label} ↗
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </header>
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    <p class="mono back"><a href="/projects/">← cd ..</a></p>
+  </article>
+</Base>
+
+<style>
+  .crumb {
+    margin: 0 0 1.5rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .sep {
+    margin: 0 0.4rem;
+  }
+  .head {
+    padding-bottom: 1.75rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .cat {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--accent);
+  }
+  h1 {
+    margin: 0.3rem 0 0.6rem;
+    font-size: clamp(1.7rem, 5vw, 2.3rem);
+    line-height: 1.25;
+  }
+  .summary {
+    margin: 0 0 1.25rem;
+    font-size: 1.05rem;
+    color: var(--text-dim);
+    max-width: 46rem;
+  }
+  .facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 2.5rem;
+    margin: 0 0 1.25rem;
+    font-size: 0.8rem;
+  }
+  .facts dt {
+    color: var(--muted);
+  }
+  .facts dd {
+    margin: 0;
+    color: var(--text);
+  }
+  .tags,
+  .links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .links {
+    margin-top: 1rem;
+    gap: 0.5rem 1.25rem;
+    font-size: 0.85rem;
+  }
+  .back {
+    margin-top: 3rem;
+    font-size: 0.85rem;
+  }
+</style>
