@@ -50,16 +50,24 @@ The best hybrid version used static interleaved rows, `MPI_Gatherv` and SIMD. On
 
 ## Scoreboard rankings
 
-Ranks on the course scoreboard (by total time plus penalty, ~95–120 entries per board). "Passed" is test cases passed.
+Ranks on the course scoreboards, in course order (by total time plus penalty, roughly 95–130 entries per board). "Passed" is test cases passed.
 
 | Board | Rank | Passed |
 | --- | --- | --- |
+| Lab 1 (MPI) | 82 | 12 / 12 |
+| HW1 (odd-even sort) | 63 | 40 / 40 |
+| Lab 2 (Pthreads) | 30 | 12 / 12 |
+| Lab 2 (OpenMP) | 84 | 12 / 12 |
+| Lab 2 (MPI hybrid) | 31 | 12 / 12 |
+| HW2a (Mandelbrot, threads) | 91 | 68 / 68 |
+| HW2b (Mandelbrot, MPI hybrid) | 80 | 68 / 68 |
+| Lab 3 MNIST (OpenACC) | 7 | 2 / 2 |
+| Lab 3 Sobel (CUDA) | 55 | 3 / 3 |
+| Lab 4 Sobel (CUDA, optimised) | 16 | 3 / 3 |
 | HW3-1 (CPU threads) | 21 | 21 / 21 |
 | HW3-2 (single GPU, NVIDIA) | 31 | 42 / 51 |
 | HW3-2 (single GPU, AMD) | 12 | 32 / 51 |
 | HW3-3 (multi-GPU) | 40 | 7 / 7 |
 | HW4 (FlashAttention, NVIDIA) | 21 | 30 / 30 |
 | HW4 (FlashAttention, AMD) | 23 | 30 / 30 |
-| Lab 3 MNIST (OpenACC) | 7 | 2 / 2 |
-| Lab 4 Sobel (CUDA, optimised) | 16 | 3 / 3 |
 | HW5 (UCX) | n/a | 2 / 2 (all passing entries tie) |
