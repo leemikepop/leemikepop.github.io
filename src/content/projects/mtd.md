@@ -1,31 +1,33 @@
 ---
 title: Android Mobile Threat Defense (MTD)
-summary: An enterprise Android mobile threat defense prototype that captures traffic via VpnService to block malicious domains, inspect TLS certificates, assess exit-network risk and score device risk in real time.
+summary: An Android mobile threat defense prototype that monitors device traffic to flag malicious domains, risky TLS connections and risky networks, and turns those signals into a real-time device risk score.
 category: android-security
 tags: [Kotlin, Jetpack Compose, C++, JNI, Python, mitmproxy, FastAPI, VpnService, DPM]
 start: 2025-09
 end: 2026-01
-role: NTHU InfoSec Lab · overall architecture lead
+role: University research lab · overall architecture lead
 repo: leemikepop/MTD
 visibility: private
 featured: true
 order: 2
 ---
 
-<!-- TODO: architecture diagram, blocking results or test data, demo screenshots -->
-
 ## Overview
 
-MTD consists of an Android app and a set of backend services. The app uses Jetpack Compose for the UI and captures device-wide traffic through `VpnService` with a JNI native packet-capture loop. It embeds a Chaquopy Python runtime to run mitmproxy for TLS inspection. The backend (FastAPI behind nginx) serves domain and IP reputation lookups.
+MTD is a research prototype made of an Android app and supporting backend services. The app routes device traffic through a local `VpnService` with native packet handling, inspects it, and combines what it sees into a risk picture of the device and its network. The backend provides reputation lookups for the app.
 
-## Features
+## What it covers
 
-- **DNS protection** — UDP/53 takes a native fast path; decisions go allowlist → local Bloom filter → backend confirmation, and only confirmed-malicious domains are blocked.
-- **TLS / SSL inspection** — checks certificate chain, hostname and revocation status, and can actively block suspicious connections.
-- **Exit-point analysis** — the backend combines GeoLite2, FireHOL anonymous and IPsum lists to rate the risk of the current egress IP.
-- **Adaptive risk scoring** — aggregates Wi-Fi, egress, DNS and TLS signals into the real-time risk snapshot shown on the home screen.
-- **Enterprise control** — Device Policy Management enforces Always-on VPN lockdown so traffic cannot bypass protection.
+- **Malicious domains** — blocks DNS lookups for known-bad domains.
+- **TLS inspection** — evaluates the certificates of the servers apps connect to and can block suspicious connections.
+- **Network risk** — rates the risk of the current Wi-Fi and egress network.
+- **Risk scoring** — aggregates these signals into a real-time risk view.
+- **Enterprise control** — managed-device policies keep protection from being bypassed.
 
-## Architecture principles
+## My role
 
-The code is split into three layers: `feature` (UI), `core` (control plane and shared domain) and `infra` (platform integration and execution). Native code always sits behind a `NativeBridge`: Kotlin decides policy, native code only handles packets and forwarding.
+I led the overall architecture: a layered design that keeps UI, control logic and platform integration apart, with native code isolated behind a narrow bridge so Kotlin decides policy and native code only moves packets.
+
+## Public follow-up
+
+The MTD code is private. [TrustProbe](/projects/trustprobe/) is an open-source follow-up written from scratch with the same platform skills — a per-app `VpnService`, a native tunnel behind JNI, TLS on both sides of the handshake — aimed at a different question: does an app validate certificates at all?
